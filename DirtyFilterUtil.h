@@ -28,6 +28,7 @@ using namespace CHLib;
 #define DIRTYFILTER_IP CHCONF_PTR->GetString(SO_CONF_PATH, "dirtyfilter", "ip").c_str()
 #define DIRTYFILTER_APPID CHCONF_PTR->GetString(SO_CONF_PATH, "dirtyfilter", "appid").c_str()
 #define DIRTYFILTER_SECRET CHCONF_PTR->GetString(SO_CONF_PATH, "dirtyfilter", "secret").c_str()
+22222222222222222222222222222222222222222
 
 class CDirtyFilterUtil
 {
