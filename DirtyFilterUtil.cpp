@@ -22,47 +22,7 @@ static const unsigned char BASE64_ENC_MAP[64] =
     '8', '9', '+', '/'
 };
 
-int base64_encode(const unsigned char *in,
-        size_t in_len,
-        unsigned char *out,
-        size_t *out_len)
-{
-    size_t i, leven;
-    unsigned char *p;
-    size_t output_len = 4 * ((in_len + 2) / 3);
 
-    if (*out_len < output_len + 1)
-    {
-        *out_len = output_len + 1;
-        return -1;
-    }
-
-    p = out;
-    leven = 3 * (in_len / 3);
-
-    for (i = 0; i < leven; i += 3)
-    {
-        *p++ = BASE64_ENC_MAP[(in[0] >> 2) & 0x3F];
-        *p++ = BASE64_ENC_MAP[(((in[0] & 3) << 4) + (in[1] >> 4)) & 0x3F];
-        *p++ = BASE64_ENC_MAP[(((in[1] & 0xf) << 2) + (in[2] >> 6)) & 0x3F];
-        *p++ = BASE64_ENC_MAP[in[2] & 0x3F];
-        in += 3;
-    }
-
-    if (i < in_len)
-    {
-        unsigned a = in[0];
-        unsigned b = (i + 1 < in_len) ? in[1] : 0;
-        *p++ = BASE64_ENC_MAP[(a >> 2) & 0x3F];
-        *p++ = BASE64_ENC_MAP[(((a & 3) << 4) + (b >> 4)) & 0x3F];
-        *p++ = (i + 1 < in_len) ? BASE64_ENC_MAP[(((b & 0xf) << 2)) & 0x3F] : '=';
-        *p++ = '=';
-    }
-
-    *p = '\0';
-    *out_len = output_len;
-    return 0;
-}
 
 
 int hex_to_str(const unsigned char *buf, size_t buf_len,
@@ -265,4 +225,47 @@ uint16_t testsingle_hex_to_str(unsigned char h, bool upper_case)
     static const char *tag_8 = upper_case ? tag_8_upper : tag_8_lower;
     uint16_t *p_src = (uint16_t *)tag_8;
     return p_src[h];
+}
+
+
+int test2base64_encode(const unsigned char *in,
+        size_t in_len,
+        unsigned char *out,
+        size_t *out_len)
+{
+    size_t i, leven;
+    unsigned char *p;
+    size_t output_len = 4 * ((in_len + 2) / 3);
+
+    if (*out_len < output_len + 1)
+    {
+        *out_len = output_len + 1;
+        return -1;
+    }
+
+    p = out;
+    leven = 3 * (in_len / 3);
+
+    for (i = 0; i < leven; i += 3)
+    {
+        *p++ = BASE64_ENC_MAP[(in[0] >> 2) & 0x3F];
+        *p++ = BASE64_ENC_MAP[(((in[0] & 3) << 4) + (in[1] >> 4)) & 0x3F];
+        *p++ = BASE64_ENC_MAP[(((in[1] & 0xf) << 2) + (in[2] >> 6)) & 0x3F];
+        *p++ = BASE64_ENC_MAP[in[2] & 0x3F];
+        in += 3;
+    }
+
+    if (i < in_len)
+    {
+        unsigned a = in[0];
+        unsigned b = (i + 1 < in_len) ? in[1] : 0;
+        *p++ = BASE64_ENC_MAP[(a >> 2) & 0x3F];
+        *p++ = BASE64_ENC_MAP[(((a & 3) << 4) + (b >> 4)) & 0x3F];
+        *p++ = (i + 1 < in_len) ? BASE64_ENC_MAP[(((b & 0xf) << 2)) & 0x3F] : '=';
+        *p++ = '=';
+    }
+
+    *p = '\0';
+    *out_len = output_len;
+    return 0;
 }
